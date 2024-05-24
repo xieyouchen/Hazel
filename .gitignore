@@ -2,6 +2,13 @@
 .vs/
 bin/
 bin-int/
+vendor/premake/
+!vendor/premake/LICENSE.txt
+!vendor/premake/premake5.exe
 
 # Files
 *.user
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.sln
