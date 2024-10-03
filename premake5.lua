@@ -9,12 +9,22 @@ workspace "Hazel"		-- sln文件名
 -- 组成输出目录:Debug-windows-x86_64
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
+-- 包含相对解决方案的目录
+includeDir = {}
+includeDir["GLFW"] = "Hazel/vendor/GLFW/include"
+-- 下面这个 include 相当于把 glfw 库中的 premake.lua 内容拷贝到此处
+include "Hazel/vendor/GLFW"
+
+
 project "Hazel"		--Hazel项目
 	location "Hazel"--在sln所属文件夹下的Hazel文件夹
 	kind "SharedLib"--dll动态库
 	language "C++"
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}") -- 输出目录
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")-- 中间目录
+
+	pchheader "hzpch.h"
+	pchsource "Hazel/src/hzpch.cpp"
 
 	-- 包含的所有h和cpp文件
 	files{
@@ -24,8 +34,21 @@ project "Hazel"		--Hazel项目
 	-- 包含目录
 	includedirs{
 		"%{prj.name}/src",
-		"%{prj.name}/vendor/spdlog/include"
+		"%{prj.name}/vendor/spdlog/include",
+		"%{includeDir.GLFW}"
 	}
+
+	-- Hazel 链接 glfw 项目
+	links {
+		"GLFW",
+		"opengl32.lib"
+	}
+	filter "system:windows"
+		defines {
+			"HZ_PLATFORM_WINDOWS",
+			"HZ_ENABLE_ASSERTS"
+		}
+
 	-- 如果是window系统
 	filter "system:windows"
 		cppdialect "C++17"
