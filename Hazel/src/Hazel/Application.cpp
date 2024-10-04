@@ -21,6 +21,15 @@ namespace Hazel {
 	{
 	}	
 
+	// ------ Layer
+	void Application::PushLayer(Layer* layer) {
+		m_LayerStack.PushLayer(layer);
+	}
+
+	void Application::PushOverlay(Layer* layer) {
+		m_LayerStack.PushOverlay(layer);
+	}
+
 	void Application::OnEvent(Event& e) 
 	{
 		// 通过事件调度器判断是否为窗口关闭事件
@@ -30,18 +39,23 @@ namespace Hazel {
 		HZ_CORE_INFO("{0}", e);
 	}
 
+	// 窗口关闭的回调函数
+	bool Application::OnWindowClose(WindowCloseEvent& e) {
+		m_Running = false;
+		return true;
+	}
+
 	void Hazel::Application::Run()
 	{
 		while (m_Running) {
 			glClearColor(1, 0, 1, 1);
 			glClear(GL_COLOR_BUFFER_BIT);
+
+			for (Layer* layer : m_LayerStack)
+				layer->OnUpdate();
+
 			m_Window->OnUpdate();
 		}
-	}
-	// 窗口关闭的回调函数
-	bool Application::OnWindowClose(WindowCloseEvent& e) {
-		m_Running = false;
-		return true;
 	}
 }
 
