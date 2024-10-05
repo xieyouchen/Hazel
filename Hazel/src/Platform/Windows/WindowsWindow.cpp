@@ -39,6 +39,14 @@ namespace Hazel {
 		// 设置 glfw 的上下文
 		glfwMakeContextCurrent(m_Window);
 
+		// 在运行时候获取 OpenGL 函数地址并保存到函数指针
+		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+		HZ_CORE_ASSERT(status, "初始化Glad失败.");
+
+		// 测试使用 OpenGL 函数
+		unsigned int id;
+		glGenBuffers(1, &id);
+
 
 		// 设置窗口关联的用户数据指针，m_Data& 会以 void* 的形式和 m_Window 绑定
 		glfwSetWindowUserPointer(m_Window, &m_Data);

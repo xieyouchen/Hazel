@@ -2,7 +2,8 @@
 
 #include "Application.h"
 #include "Log.h"
-#include "GLFW/glfw3.h"
+//#include "GLFW/glfw3.h"
+#include "glad/glad.h"
 
 namespace Hazel {
 
@@ -48,6 +49,7 @@ namespace Hazel {
 	void Hazel::Application::Run()
 	{
 		while (m_Running) {
+			// run中使用了opengl函数
 			glClearColor(1, 0, 1, 1);
 			glClear(GL_COLOR_BUFFER_BIT);
 
