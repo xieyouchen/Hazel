@@ -15,6 +15,9 @@ includeDir["GLFW"] = "Hazel/vendor/GLFW/include"
 -- 下面这个 include 相当于把 glfw 库中的 premake.lua 内容拷贝到此处
 
 includeDir["Glad"] = "Hazel/vendor/Glad/include"
+includeDir["ImGui"] = "Hazel/vendor/imgui"
+
+include "Hazel/vendor/imgui"
 include "Hazel/vendor/GLFW"
 include "Hazel/vendor/Glad"
 
@@ -39,13 +42,15 @@ project "Hazel"		--Hazel项目
 		"%{prj.name}/src",
 		"%{prj.name}/vendor/spdlog/include",
 		"%{includeDir.GLFW}",
-		"%{includeDir.Glad}"
+		"%{includeDir.Glad}",
+		"%{includeDir.ImGui}"
 	}
 
 	-- Hazel 链接 glfw 项目
 	links {
 		"GLFW",
 		"Glad",
+		"ImGui",
 		"opengl32.lib"
 	}
 	filter "system:windows"
