@@ -16,7 +16,7 @@ namespace Hazel {
 		// APP的操作，暂时先不看
 		AppTick, AppUpdate, AppRender,
 		// 键盘的2种操作
-		KeyPressed, KeyReleased,
+		KeyPressed, KeyReleased, KeyTyped,
 		// 鼠标的4种操作
 		MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled
 	};
