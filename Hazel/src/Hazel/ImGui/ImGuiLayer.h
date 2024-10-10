@@ -27,8 +27,6 @@ namespace Hazel {
 		bool OnKeyTypedEvent(KeyTypedEvent& e);
 		bool OnWindowResizeEvent(WindowResizeEvent& e);
 
-
-
 	private:
 		float m_time = 0.0f;
 	};

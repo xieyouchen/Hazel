@@ -49,7 +49,7 @@ namespace Hazel {
 		inline bool IsInCategory(EventCategory category) {
 			return GetCategoryFlags() & category;
 		}
-	protected:
+	
 		bool m_Handled = false;
 	};
 
@@ -63,7 +63,7 @@ namespace Hazel {
 		template<typename T>
 		bool Dispathcer(EventFn<T> func) {
 			if (m_Event.GetEventType() == T::GetStaticType()) {
-				m_Event.m_Handled = func(*(T*)&m_Event);
+				m_Event.m_Handled = func(*(T*)&m_Event); // 此处进行了 OnXXXEvent() 回调函数的调用
 				return true;
 			}
 			return false;

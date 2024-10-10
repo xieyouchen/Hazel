@@ -47,7 +47,6 @@ namespace Hazel {
 		unsigned int id;
 		glGenBuffers(1, &id);
 
-
 		// 设置窗口关联的用户数据指针，m_Data& 会以 void* 的形式和 m_Window 绑定
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 		SetVSync(true);

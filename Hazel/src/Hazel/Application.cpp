@@ -20,6 +20,8 @@ namespace Hazel {
 		m_Window = std::unique_ptr<Window>(Window::Create());
 		
 		// 设置窗口事件的回调函数
+		// param: std::function<void(Event&)>
+		//m_Window->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
 		m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
 	}
 
@@ -38,10 +40,19 @@ namespace Hazel {
 
 	void Application::OnEvent(Event& e) 
 	{
+		HZ_ERROR("Application OnEvent");
 		// 通过事件调度器判断是否为窗口关闭事件
 		EventDispatcher dispatcher(e);
+		//dispatcher.Dispathcer<WindowCloseEvent>(std::bind(&Application::OnWindowClose, this, std::placeholders::_1));
 		dispatcher.Dispathcer<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
 
+		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();) {
+			(*--it)->OnEvent(e);
+			if (e.m_Handled) {
+				break;
+			}
+		}
+		
 		HZ_CORE_INFO("{0}", e);
 	}
 

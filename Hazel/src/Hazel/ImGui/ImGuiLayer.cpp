@@ -72,8 +72,10 @@ namespace Hazel {
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	}
+
 	void ImGuiLayer::OnEvent(Event& e)
 	{
+        HZ_ERROR("Layer OnEvent");
         EventDispatcher dispatcher(e);
         dispatcher.Dispathcer<MouseButtonPressedEvent>(HZ_BIND_EVENT_FN(ImGuiLayer::OnMouseButtonPressedEvent));
         dispatcher.Dispathcer<MouseButtonReleasedEvent>(HZ_BIND_EVENT_FN(ImGuiLayer::OnMouseButtonReleasedEvent));
