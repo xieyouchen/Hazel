@@ -29,6 +29,11 @@ project "Hazel"		--Hazel项目
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}") -- 输出目录
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")-- 中间目录
 
+	-- On: 代码生成的时候运行库选项是 MTD，静态链接 MSVCRT.lib 库
+	-- Off: 代码生成的运行库选项是 MDD，动态链接 MSVCRT.dll 库；打包到另一台电脑的.exe没有dll文件会报错
+	staticruntime "Off"
+
+	-- 预编译头
 	pchheader "hzpch.h"
 	pchsource "Hazel/src/hzpch.cpp"
 
@@ -62,9 +67,6 @@ project "Hazel"		--Hazel项目
 	-- 如果是window系统
 	filter "system:windows"
 		cppdialect "C++17"
-		-- On:代码生成的运行库选项是MTD,静态链接MSVCRT.lib库;
-		-- Off:代码生成的运行库选项是MDD,动态链接MSVCRT.dll库;打包后的exe放到另一台电脑上若无这个dll会报错
-		staticruntime "On"	
 		systemversion "10.0"	-- windowSDK版本
 		-- 预处理器定义
 		defines{
@@ -80,23 +82,25 @@ project "Hazel"		--Hazel项目
 	-- 不同配置下的预定义不同
 	filter "configurations:Debug"
 		defines "HZ_DEBUG"
-		buildoptions "/MDd"
+		runtime "Debug"
 		symbols "On"
 
 	filter "configurations:Release"
 		defines "HZ_RELEASE"
-		buildoptions "/MD"
+		-- 如果想要一个非 dll，那么就是 staticruntime，但这里我们还是用dll
+		runtime "Release"
 		optimize "On"
 
 	filter "configurations:Dist"
 		defines "HZ_DIST"
-		buildoptions "/MD"
+		runtime "Release"
 		optimize "On"
 
 project "Sandbox"
 	location "Sandbox"
 	kind "ConsoleApp"
 	language "C++"
+	staticruntime "Off"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -117,8 +121,7 @@ project "Sandbox"
 
 	filter "system:windows"
 		cppdialect "C++17"
-		staticruntime "On"
-		systemversion "10.0"
+		systemversion "latest"
 
 		defines{
 			"HZ_PLATFORM_WINDOWS"
@@ -126,12 +129,15 @@ project "Sandbox"
 
 	filter "configurations:Debug"
 		defines "HZ_DEBUG"
+		runtime "Debug"
 		symbols "On"
 
 	filter "configurations:Release"
 		defines "HZ_RELEASE"
+		runtime "Release"
 		optimize "On"
 
 	filter "configurations:Dist"
 		defines "HZ_DIST"
+		runtime "Release"
 		optimize "On"

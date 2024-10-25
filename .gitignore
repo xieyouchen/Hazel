@@ -12,3 +12,5 @@ vendor/premake/
 *.vcxproj.filters
 *.vcxproj.user
 *.sln
+
+imgui.ini
