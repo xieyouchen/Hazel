@@ -1,5 +1,6 @@
 workspace "Hazel"		-- sln文件名
 	architecture "x64"	
+	startproject "Sandbox" -- 启动项目
 	configurations{
 		"Debug",
 		"Release",
@@ -20,7 +21,6 @@ includeDir["ImGui"] = "Hazel/vendor/imgui"
 include "Hazel/vendor/imgui"
 include "Hazel/vendor/GLFW"
 include "Hazel/vendor/Glad"
-
 
 project "Hazel"		--Hazel项目
 	location "Hazel"--在sln所属文件夹下的Hazel文件夹
