@@ -18,9 +18,11 @@ includeDir["GLFW"] = "Hazel/vendor/GLFW/include"
 includeDir["Glad"] = "Hazel/vendor/Glad/include"
 includeDir["ImGui"] = "Hazel/vendor/imgui"
 
-include "Hazel/vendor/imgui"
-include "Hazel/vendor/GLFW"
-include "Hazel/vendor/Glad"
+group "Dependencies"
+	include "Hazel/vendor/imgui"
+	include "Hazel/vendor/GLFW"
+	include "Hazel/vendor/Glad"
+group ""
 
 project "Hazel"		--Hazel项目
 	location "Hazel"--在sln所属文件夹下的Hazel文件夹
