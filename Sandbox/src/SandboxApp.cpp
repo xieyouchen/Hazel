@@ -6,14 +6,23 @@ public:
 	ExampleLayer()
 		: Layer("Example") {}
 
+	// 输入轮询
 	void OnUpdate() override {
-		HZ_INFO("ExampleLayer::Update"); // 最终会被输出
+		if (Hazel::Input::IsKeyPressed(HZ_KEY_A)) {
+			HZ_TRACE("A is pressed(polling)");
+		}
 	}
 
-	void OnEvent(Hazel::Event& e) override {
-		// 似乎没有被输出？
-		HZ_ERROR("Output!");
-		HZ_TRACE("{0}", e); // 最终会被输出
+	// 事件系统
+	void OnEvent(Hazel::Event& event) override {
+		if (event.GetEventType() == Hazel::EventType::KeyPressed) {
+			Hazel::KeyPressedEvent& e = (Hazel::KeyPressedEvent&)event;
+			auto keycode = e.GetKeyCode();
+			if (keycode == HZ_KEY_A) {
+				HZ_TRACE("A is pressed(event)");
+			}
+			HZ_TRACE("{0}", (char)keycode);
+		}
 	}
 
 };
@@ -23,7 +32,7 @@ class Sandbox : public Hazel::Application
 public:
 	Sandbox()
 	{
-		//PushLayer(new ExampleLayer()); // 就是一直打印 ExampleLayer::Update，如果不想要了就注释
+		PushLayer(new ExampleLayer()); // 就是一直打印 ExampleLayer::Update，如果不想要了就注释
 		// 要注意粉色窗口是 WindowsWindow::Init() 创建的
 		PushOverlay(new Hazel::ImGuiLayer());
 	}
