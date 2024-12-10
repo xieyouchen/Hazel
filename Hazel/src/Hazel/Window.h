@@ -25,6 +25,8 @@ namespace Hazel {
 		virtual void SetVSync(bool enabled) = 0;
 		virtual bool IsVSync() const = 0;
 
+		virtual void* GetNativeWindow() const = 0;
+
 		// 在 Window 父类声明创建函数
 		static Window* Create(const WindowProps& props = WindowProps());
 	};

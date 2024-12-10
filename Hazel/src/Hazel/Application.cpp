@@ -4,6 +4,7 @@
 #include "Log.h"
 //#include "GLFW/glfw3.h"
 #include "glad/glad.h"
+#include "Platform/Windows/WindowsInput.h"
 
 namespace Hazel {
 
@@ -69,8 +70,13 @@ namespace Hazel {
 			glClearColor(1, 0, 1, 1);
 			glClear(GL_COLOR_BUFFER_BIT);
 
+			// 从前往后顺序更新层
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate();
+
+			// 全局测试 Input 输入检测
+			auto[x, y] = Input::GetMousePosition();
+			HZ_CORE_TRACE("{0} {1}", x, y);
 
 			m_Window->OnUpdate();
 		}
