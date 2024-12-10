@@ -5,19 +5,19 @@ Hazel Engine Learning following Cherno
 
 1. `git clone --recursive git@github.com:xieyouchen/Hazel.git` 
 
-2. 创建 vendor\premake
+2. 修改 imgui.cpp 文件中 3839 行代码为 
 
-3. 保存 [premake 的 LICENSE.txt](https://github.com/premake/premake-core/blob/master/LICENSE.txt)
+   ```c++
+       if (window) {
+           for (int i = 0; i < window->DC.Layouts.Data.Size; i++)
+           {
+               ImGuiLayout* layout = (ImGuiLayout*)window->DC.Layouts.Data[i].val_p;
+               IM_DELETE(layout);
+           }
+       }
+   ```
 
-4. 下载 [premake-core 的 win 版本](https://github.com/premake/premake-core/releases)
-
-5. 最后有目录
-
-   vendor\premake\LICENSE.txt
-
-   vendor\premake\premake.exe
-
-6. 点击根目录下的 GenerateProject.bat 生成 .sln 工程文件
+3. 点击根目录下的 GenerateProject.bat 生成 .sln 工程文件
 
 
 
