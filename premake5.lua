@@ -12,12 +12,13 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 -- 包含相对解决方案的目录
 includeDir = {}
-includeDir["GLFW"] = "Hazel/vendor/GLFW/include"
--- 下面这个 include 相当于把 glfw 库中的 premake.lua 内容拷贝到此处
-
+includeDir["GLFW"] = "Hazel/vendor/GLFW/include" 
 includeDir["Glad"] = "Hazel/vendor/Glad/include"
 includeDir["ImGui"] = "Hazel/vendor/imgui"
+includeDir["glm"] = "Hazel/vendor/glm"
 
+-- 下面这个 include 相当于把 glfw 库中的 premake.lua 内容拷贝到此处
+-- 如果没有 premake.lua 会报错，比如说 	include "Hazel/vendor/glm"
 group "Dependencies"
 	include "Hazel/vendor/imgui"
 	include "Hazel/vendor/GLFW"
@@ -39,18 +40,21 @@ project "Hazel"		--Hazel项目
 	pchheader "hzpch.h"
 	pchsource "Hazel/src/hzpch.cpp"
 
-	-- 包含的所有h和cpp文件
+	-- 包含的所有h和cpp文件，把文件包含进解决方案，但是无法引用，因为无法定位到指定路径，需要包含目录includedirs
 	files{
 		"%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.cpp"
+		"%{prj.name}/src/**.cpp",
+		"%{prj.name}/vendor/glm/glm/**.hpp",
+		"%{prj.name}/vendor/glm/glm/**.inl"
 	}
-	-- 包含目录
+	-- 头文件搜索路径
 	includedirs{
 		"%{prj.name}/src",
 		"%{prj.name}/vendor/spdlog/include",
 		"%{includeDir.GLFW}",
 		"%{includeDir.Glad}",
-		"%{includeDir.ImGui}"
+		"%{includeDir.ImGui}",
+		"%{includeDir.glm}"
 	}
 
 	-- Hazel 链接 glfw 项目
@@ -111,10 +115,11 @@ project "Sandbox"
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp"
 	}
-	-- 同样包含spdlog头文件
+	-- 头文件搜索路径
 	includedirs{
 		"Hazel/vendor/spdlog/include",
-		"Hazel/src"
+		"Hazel/src",
+		"%{includeDir.glm}"
 	}
 	-- 引用hazel
 	links{
