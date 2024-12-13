@@ -5,6 +5,7 @@
 		#define HAZEL_API __declspec(dllexport)
 	#else
 		#define HAZEL_API __declspec(dllimport)
+		#define IMGUI_API __declspec(dllimport) // ÃÌº”µº»Î	
 	#endif
 #else
 	#error Hazel only support Windows!

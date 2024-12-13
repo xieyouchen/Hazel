@@ -11,7 +11,6 @@ int main(int argc, char** argv)
 	HZ_WARN("Watch out, Var a = {0}!", a);
 	HZ_CORE_INFO("Hello!");
 
-
 	auto app = Hazel::CreateApplication();
 	app->Run();
 	delete app;

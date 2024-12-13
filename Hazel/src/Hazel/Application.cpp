@@ -24,6 +24,10 @@ namespace Hazel {
 		// param: std::function<void(Event&)>
 		//m_Window->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
 		m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
+
+		// 将 ImGuiLayer 放在最后
+		m_ImGuiLayer = new ImGuiLayer();
+		PushOverlay(m_ImGuiLayer);
 	}
 
 	Hazel::Application::~Application()
@@ -41,7 +45,7 @@ namespace Hazel {
 
 	void Application::OnEvent(Event& e) 
 	{
-		HZ_ERROR("Application OnEvent");
+		//HZ_ERROR("Application OnEvent");
 		// 通过事件调度器判断是否为窗口关闭事件
 		EventDispatcher dispatcher(e);
 		//dispatcher.Dispathcer<WindowCloseEvent>(std::bind(&Application::OnWindowClose, this, std::placeholders::_1));
@@ -54,7 +58,7 @@ namespace Hazel {
 			}
 		}
 		
-		HZ_CORE_INFO("{0}", e);
+		//HZ_CORE_INFO("{0}", e); // 开头会带 Hazel，绿色字体
 	}
 
 	// 窗口关闭的回调函数
@@ -73,6 +77,12 @@ namespace Hazel {
 			// 从前往后顺序更新层
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate();
+
+			m_ImGuiLayer->Begin();
+			// 从前往后顺序更新层
+			for (Layer* layer : m_LayerStack)
+				layer->OnImGuiRender();
+			m_ImGuiLayer->End();
 
 			m_Window->OnUpdate();
 		}

@@ -27,7 +27,7 @@ namespace Hazel {
 
 		virtual void* GetNativeWindow() const = 0;
 
-		// 在 Window 父类声明创建函数
+		// 在 Window 父类声明静态的创建函数
 		static Window* Create(const WindowProps& props = WindowProps());
 	};
 }
