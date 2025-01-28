@@ -3,6 +3,8 @@
 #ifdef HZ_PLATFORM_WINDOWS
 	#ifdef HZ_BUILD_DLL
 		#define HAZEL_API __declspec(dllexport)
+		//#define IMGUI_API _declspec (dllexport) // 添加对IMGUI_API的定义，导出api
+		// 这一行可以修改 imgui\premake.lua 中的 define 生效
 	#else
 		#define HAZEL_API __declspec(dllimport)
 		#define IMGUI_API __declspec(dllimport) // 添加导入	

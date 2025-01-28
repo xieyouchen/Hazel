@@ -17,7 +17,16 @@ Hazel Engine Learning following Cherno
        }
    ```
 
-3. 点击根目录下的 GenerateProject.bat 生成 .sln 工程文件
+3. 添加指令到 \Hazel\vendor\imgui\premake.lua 文件(比如在24行)中
+
+   ```lua
+   defines 
+	{
+        "IMGUI_API=__declspec(dllexport)"
+	}
+   ```
+
+4. 点击根目录下的 GenerateProject.bat 生成 .sln 工程文件
 
 
 
