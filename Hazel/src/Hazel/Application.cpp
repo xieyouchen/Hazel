@@ -23,6 +23,7 @@ namespace Hazel {
 		// 设置窗口事件的回调函数
 		// param: std::function<void(Event&)>
 		//m_Window->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
+		//m_Window->SetEventCallback(this->OnEvent);
 		m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
 
 		// 将 ImGuiLayer 放在最后
@@ -79,7 +80,7 @@ namespace Hazel {
 				layer->OnUpdate();
 
 			m_ImGuiLayer->Begin();
-			// 从前往后顺序更新层
+			 //从前往后顺序更新层
 			for (Layer* layer : m_LayerStack)
 				layer->OnImGuiRender();
 			m_ImGuiLayer->End();

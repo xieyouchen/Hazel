@@ -2,10 +2,13 @@
 
 #ifdef HZ_PLATFORM_WINDOWS
 	#ifdef HZ_BUILD_DLL
-		#define HAZEL_API __declspec(dllexport)
+		//#define HAZEL_API __declspec(dllexport)
+		#define HAZEL_API
 	#else
-		#define HAZEL_API __declspec(dllimport)
-		#define IMGUI_API __declspec(dllimport) // 添加导入	
+		//#define HAZEL_API __declspec(dllimport)
+		//#define IMGUI_API __declspec(dllimport) // 添加导入
+		#define HAZEL_API
+		#define IMGUI_API
 	#endif
 #else
 	#error Hazel only support Windows!

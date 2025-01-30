@@ -3,6 +3,7 @@
 #include "Hazel/Events/ApplicationEvent.h"
 #include "Hazel/Events/KeyEvent.h"
 #include "Hazel/Events/MouseEvent.h"
+#include "Platform/OpenGLContext/OpenGLContext.h"
 
 namespace Hazel {
 	static bool s_GLFWInitialized = false;
@@ -35,13 +36,8 @@ namespace Hazel {
 
 		// 创建窗口
 		m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, props.Title.c_str(), nullptr, nullptr);
-
-		// 设置 glfw 的上下文
-		glfwMakeContextCurrent(m_Window);
-
-		// 在运行时候获取 OpenGL 函数地址并保存到函数指针
-		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-		HZ_CORE_ASSERT(status, "初始化Glad失败.");
+		m_Context = new OpenGLContext(m_Window);
+		m_Context->Init();
 
 		// 测试使用 OpenGL 函数
 		unsigned int id;
@@ -132,6 +128,6 @@ namespace Hazel {
 
 	void WindowsWindow::OnUpdate() {
 		glfwPollEvents(); // 轮询事件
-		glfwSwapBuffers(m_Window); //交换缓冲
+		m_Context->SwapBuffers();
 	}
 }

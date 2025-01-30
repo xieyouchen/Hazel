@@ -27,7 +27,7 @@ group ""
 
 project "Hazel"		--Hazel项目
 	location "Hazel"--在sln所属文件夹下的Hazel文件夹
-	kind "SharedLib"--dll动态库
+	kind "StaticLib"--dll动态库
 	language "C++"
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}") -- 输出目录
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")-- 中间目录

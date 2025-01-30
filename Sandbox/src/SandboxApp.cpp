@@ -9,9 +9,9 @@ public:
 
 	// 输入轮询
 	void OnUpdate() override {
-		//if (Hazel::Input::IsKeyPressed(HZ_KEY_A)) {
-		//	HZ_TRACE("A is pressed(polling)");
-		//}
+		if (Hazel::Input::IsKeyPressed(HZ_KEY_A)) {
+			HZ_TRACE("A is pressed(polling)");
+		}
 	}
 
 	virtual void OnImGuiRender() override {

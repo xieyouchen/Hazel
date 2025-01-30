@@ -3,6 +3,7 @@
 #include "glad/glad.h"
 
 #include "GLFW/glfw3.h"
+#include "Hazel/Renderer/GraphicsContext.h"
 
 namespace Hazel {
 	class WindowsWindow: public Window
@@ -26,6 +27,8 @@ namespace Hazel {
 		virtual void Shutdown() {}
 	private:
 		GLFWwindow* m_Window;
+		GraphicsContext* m_Context;
+
 		struct WindowData { // 这个不会和父类的 WindowsProps 重复吗？用于传递给glfw
 			std::string Title;
 			unsigned int Width, Height;
