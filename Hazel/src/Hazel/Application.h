@@ -31,6 +31,10 @@ namespace Hazel {
 		bool OnWindowClose(WindowCloseEvent& e);
 		LayerStack m_LayerStack;
 
+		unsigned int m_VertexBuffer;
+		unsigned int m_VertexArray;
+		unsigned int m_IndexBuffer;
+
 	private:
 		static Application* s_Instance;
 	};
