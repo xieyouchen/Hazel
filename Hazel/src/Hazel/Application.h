@@ -5,6 +5,7 @@
 #include "LayerStack.h"
 #include "Events/ApplicationEvent.h"
 #include "ImGui/ImGuiLayer.h"
+#include "Renderer/Shader.h"
 
 
 namespace Hazel {
@@ -31,12 +32,12 @@ namespace Hazel {
 		bool OnWindowClose(WindowCloseEvent& e);
 		LayerStack m_LayerStack;
 
-		unsigned int m_VertexBuffer;
-		unsigned int m_VertexArray;
-		unsigned int m_IndexBuffer;
+		unsigned int m_VertexBuffer, m_VertexArray, m_IndexBuffer;
 
+		std::unique_ptr<Shader> m_Shader;
 	private:
 		static Application* s_Instance;
+
 	};
 
 	// To be defined in CLIENT, e.g. Sandbox
