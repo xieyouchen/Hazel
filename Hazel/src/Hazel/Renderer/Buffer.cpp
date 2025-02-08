@@ -12,7 +12,7 @@ namespace Hazel {
 
 	Hazel::IndexBuffer* IndexBuffer::Create(uint32_t* indices, uint32_t size)
 	{
-		return new OpenGLIndexBuffer(indices, size);
+		return new OpenGLIndexBuffer(indices, size * sizeof(uint32_t));
 	}
 
 }
