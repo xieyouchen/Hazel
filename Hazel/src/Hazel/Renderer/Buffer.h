@@ -76,7 +76,7 @@ namespace Hazel {
 				m_Stride += element.Size;
 			}
 		}
-		inline const std::vector<BufferElement>& GetElements() { return m_Elements; }
+		inline const std::vector<BufferElement>& GetElements() const { return m_Elements; }
 
 		std::vector<BufferElement>::iterator begin() { return m_Elements.begin(); }
 		std::vector<BufferElement>::iterator end() { return m_Elements.end(); }
@@ -112,6 +112,8 @@ namespace Hazel {
 		virtual void UnBind() const = 0;
 
 		static IndexBuffer* Create(uint32_t* indices, uint32_t size);
+
+		virtual inline uint32_t GetCount() const = 0;
 	};
 
 

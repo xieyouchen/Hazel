@@ -25,9 +25,10 @@ namespace Hazel {
 
 		virtual void Bind() const;
 		virtual void UnBind() const;
-
+		inline virtual uint32_t GetCount() const { return m_Count; }
 
 	private:
 		uint32_t m_RendererID;
+		uint32_t m_Count;
 	};
 }
