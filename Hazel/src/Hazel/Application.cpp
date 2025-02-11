@@ -3,8 +3,12 @@
 #include "Application.h"
 #include "Log.h"
 //#include "GLFW/glfw3.h"
-#include "glad/glad.h"
+//#include "glad/glad.h"
 #include "Input.h"
+
+#include "Renderer/RendererCommand.h"
+#include "Renderer/Renderer.h"
+
 
 namespace Hazel {
 
@@ -175,19 +179,19 @@ namespace Hazel {
 	{
 		while (m_Running) {
 			// run中使用了opengl函数
-			glClearColor(0.1f, 0.1f,0.1f, 1);
-			glClear(GL_COLOR_BUFFER_BIT);
+
+			RenderCommand::SetClearColor({ 0.1f, 0.1f,0.1f, 1 });
+			RenderCommand::Clear();
+
+			Renderer::BeginScene();
 
 			m_BlueShader->Bind();
-			m_SquareVAO->Bind();
-			// 注意最后一个参数是 nullptr
-			glDrawElements(GL_TRIANGLES, m_SquareVAO->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
-
+			Renderer::Submit(m_SquareVAO);
 
 			m_Shader->Bind();
-			m_VertexArray->Bind();
-			// 注意最后一个参数是 nullptr
-			glDrawElements(GL_TRIANGLES, m_VertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+			Renderer::Submit(m_VertexArray);
+
+			Renderer::EndScene();
 
 			
 			// 从前往后顺序更新层
