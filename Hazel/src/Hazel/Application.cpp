@@ -4,6 +4,8 @@
 #include "Log.h"
 #include "Input.h"
 
+#include <GLFW/glfw3.h>
+
 namespace Hazel {
 
 #define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
@@ -11,6 +13,7 @@ namespace Hazel {
 	Application* Application::s_Instance = nullptr;
 
 	Hazel::Application::Application()
+		: m_LastFrameTime(0)
 	{
 		HZ_CORE_ASSERT(!s_Instance, "Application already exists!");
 		s_Instance = this;
@@ -49,7 +52,7 @@ namespace Hazel {
 		// 通过事件调度器判断是否为窗口关闭事件
 		EventDispatcher dispatcher(e);
 		//dispatcher.Dispathcer<WindowCloseEvent>(std::bind(&Application::OnWindowClose, this, std::placeholders::_1));
-		dispatcher.Dispathcer<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
+		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
 
 		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();) {
 			(*--it)->OnEvent(e);
@@ -57,8 +60,6 @@ namespace Hazel {
 				break;
 			}
 		}
-		
-		//HZ_CORE_INFO("{0}", e); // 开头会带 Hazel，绿色字体
 	}
 
 	// 窗口关闭的回调函数
@@ -70,16 +71,19 @@ namespace Hazel {
 	void Hazel::Application::Run()
 	{
 		while (m_Running) {
+			float time = (float)glfwGetTime();
+			TimeStep ts = time - m_LastFrameTime;
+			m_LastFrameTime = time;
 
 			// 从前往后顺序更新层
 			for (Layer* layer : m_LayerStack)
-				layer->OnUpdate();
+				layer->OnUpdate(ts);
 
-			m_ImGuiLayer->Begin();
-			 //从前往后顺序更新层
-			for (Layer* layer : m_LayerStack)
-				layer->OnImGuiRender();
-			m_ImGuiLayer->End();
+			//m_ImGuiLayer->Begin();
+			// //从前往后顺序更新层
+			//for (Layer* layer : m_LayerStack)
+			//	layer->OnImGuiRender();
+			//m_ImGuiLayer->End();
 
 			m_Window->OnUpdate();
 		}

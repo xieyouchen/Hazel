@@ -10,6 +10,8 @@
 #include "Hazel/KeyCodes.h"
 #include "Hazel/MouseButtonCodes.h"
 
+#include "Hazel/Core/TimeStep.h"
+
 
 // --- Renderer -----------------------
 #include "Hazel/Renderer/Buffer.h"

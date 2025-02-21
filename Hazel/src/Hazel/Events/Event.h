@@ -61,7 +61,7 @@ namespace Hazel {
 		EventDispatcher(Event& event) : m_Event(event) {}
 
 		template<typename T>
-		bool Dispathcer(EventFn<T> func) {
+		bool Dispatch(EventFn<T> func) {
 			if (m_Event.GetEventType() == T::GetStaticType()) {
 				m_Event.m_Handled = func(*(T*)&m_Event); // 此处进行了 OnXXXEvent() 回调函数的调用
 				return true;
