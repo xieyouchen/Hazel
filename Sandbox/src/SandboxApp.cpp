@@ -57,6 +57,8 @@ public:
 			in vec3 v_Position;
 			in vec4 v_Color;
 
+			uniform vec4 u_Color;
+
 			void main() {
 				color = vec4(v_Position * 0.5 + 0.5, 1.0);
 				color = v_Color;
@@ -92,12 +94,12 @@ public:
 			layout(location = 0) in vec3 a_Position;
 
 			uniform mat4 u_ViewProjection;
-			uniform mat4 u_transform;
+			uniform mat4 u_Transform;
 
 			out vec3 v_Position;
 
 			void main() {
-				gl_Position = u_ViewProjection * u_transform * vec4(a_Position, 1.0);
+				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);
 				v_Position = a_Position;
 			}
 		)";
@@ -107,9 +109,10 @@ public:
 			
 			layout(location = 0) out vec4 color;
 			in vec3 v_Position;
+			uniform vec4 u_Color;
 
 			void main() {
-				color = vec4(0.2f, 0.3f, 0.8f, 1.0f);
+				color = u_Color;
 			}
 		)";
 		m_BlueShader.reset(new Hazel::Shader(SquareVertexSrc, SquareFragmentSrc));
@@ -146,10 +149,18 @@ public:
 		Hazel::Renderer::BeginScene(m_Camera);
 
 		glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
-		for (int j = 0; j < 20; j++) {
-			for (int i = 0; i < 20; i++) {
-				glm::vec3 pos = { i * 0.11f + 0.5f, j * 0.11f + 0.3f, 0.0f };
+		int T = 21;
+		glm::vec4 redColor = { 0.8f, 0.2f, 0.3f, 1.0f };
+		glm::vec4 blueColor = { 0.2f, 0.3f, 0.8f, 1.0f };
+		for (int i = 0; i < T; i++) {
+			for (int j = 0; j < T; j++) {
+				glm::vec3 pos = { i * 0.11f + 0.3f, j * 0.11f + 0.3f, 0.0f };
 				glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
+				if (j % 2 == 0 && i % 2 == 0)
+					m_BlueShader->UploadUniformFloat4("u_Color", redColor);
+				else
+					m_BlueShader->UploadUniformFloat4("u_Color", blueColor);
+
 				Hazel::Renderer::Submit(m_BlueShader, m_SquareVAO, transform);
 			}
 		}
