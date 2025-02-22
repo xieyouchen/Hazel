@@ -137,4 +137,10 @@ namespace Hazel {
 		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
 	}
 
+	void Shader::UploadUniformFloat4(const std::string& name, const glm::mat4& matrix)
+	{
+		GLint transform = glGetUniformLocation(m_RendererID, name.c_str());
+		glUniformMatrix4fv(transform, 1, GL_FALSE, glm::value_ptr(matrix));
+	}
+
 }

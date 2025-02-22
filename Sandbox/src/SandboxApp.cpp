@@ -1,19 +1,20 @@
 #include <Hazel.h>
 #include "imgui/imgui.h"
 
+#include <glm/gtc/matrix_transform.hpp>
 
 
 class ExampleLayer : public Hazel::Layer
 {
 public:
 	ExampleLayer()
-		: Layer("Example"), m_Camera(-2, 2, -2, 2), m_CameraPosition(0.0f)
+		: Layer("Example"), m_Camera(-1.6f, 1.6f, -0.9f, 0.9f), m_CameraPosition(0.0f)
 	{
 		m_VertexArray.reset(Hazel::VertexArray::Create());
 
 		float vertices[3 * 7] = {
-			-0.5f,	-0.5f,	0.0f,   0.8f, 0.2f, 0.2f, 1.0f,
-			0.5f,	-0.5f,	0.0f,	0.2f, 0.2f, 0.8f, 1.0f,
+			-0.5f,	-0.5f,	0.0f,   0.8f, 0.2f, 0.3f, 1.0f,
+			0.5f,	-0.5f,	0.0f,	0.2f, 0.3f, 0.8f, 1.0f,
 			0.0f,	0.5f,	0.0f,	0.8f, 0.8f, 0.2f, 1.0f
 		};
 		std::shared_ptr<Hazel::VertexBuffer> vertexBuffer;
@@ -66,10 +67,10 @@ public:
 
 		m_SquareVAO.reset(Hazel::VertexArray::Create());
 		float squareVertices[4 * 3] = {
-			-0.75f,	-0.75f,	0.0f,
-			 0.75f,	-0.75f,	0.0f,
-			 0.75f,	 0.75f,	0.0,
-			-0.75f,	 0.75f,	0.0,
+			-0.5f,	-0.5f,	0.0f,
+			 0.5f,	-0.5f,	0.0f,
+			 0.5f,	 0.5f,	0.0,
+			-0.5f,	 0.5f,	0.0,
 		};
 		std::shared_ptr<Hazel::VertexBuffer> SquareBuffer;
 		SquareBuffer.reset(Hazel::VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
@@ -91,11 +92,12 @@ public:
 			layout(location = 0) in vec3 a_Position;
 
 			uniform mat4 u_ViewProjection;
+			uniform mat4 u_transform;
 
 			out vec3 v_Position;
 
 			void main() {
-				gl_Position = u_ViewProjection * vec4(a_Position, 1.0);
+				gl_Position = u_ViewProjection * u_transform * vec4(a_Position, 1.0);
 				v_Position = a_Position;
 			}
 		)";
@@ -107,7 +109,7 @@ public:
 			in vec3 v_Position;
 
 			void main() {
-				color = vec4(0.6f, 0.6f, 0.6f, 1.0f);
+				color = vec4(0.2f, 0.3f, 0.8f, 1.0f);
 			}
 		)";
 		m_BlueShader.reset(new Hazel::Shader(SquareVertexSrc, SquareFragmentSrc));
@@ -143,7 +145,14 @@ public:
 
 		Hazel::Renderer::BeginScene(m_Camera);
 
-		Hazel::Renderer::Submit(m_BlueShader, m_SquareVAO);
+		glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
+		for (int j = 0; j < 20; j++) {
+			for (int i = 0; i < 20; i++) {
+				glm::vec3 pos = { i * 0.11f + 0.5f, j * 0.11f + 0.3f, 0.0f };
+				glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
+				Hazel::Renderer::Submit(m_BlueShader, m_SquareVAO, transform);
+			}
+		}
 
 		Hazel::Renderer::Submit(m_Shader, m_VertexArray);
 
