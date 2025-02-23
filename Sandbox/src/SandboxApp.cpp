@@ -1,7 +1,13 @@
 #include <Hazel.h>
+
+#include "Platform/OpenGL/OpenGLShader.h"
+
 #include "imgui/imgui.h"
 
 #include <glm/gtc/matrix_transform.hpp>
+
+#include <glm/gtc/type_ptr.hpp>
+
 
 
 class ExampleLayer : public Hazel::Layer
@@ -64,7 +70,7 @@ public:
 				color = v_Color;
 			}
 		)";
-		m_Shader.reset(new Hazel::Shader(vertexSrc, fragmentSrc));
+		m_Shader.reset(Hazel::OpenGLShader::Create(vertexSrc, fragmentSrc));
 
 
 		m_SquareVAO.reset(Hazel::VertexArray::Create());
@@ -109,13 +115,13 @@ public:
 			
 			layout(location = 0) out vec4 color;
 			in vec3 v_Position;
-			uniform vec4 u_Color;
+			uniform vec3 u_Color;
 
 			void main() {
-				color = u_Color;
+				color = vec4(u_Color, 1.0);
 			}
 		)";
-		m_BlueShader.reset(new Hazel::Shader(SquareVertexSrc, SquareFragmentSrc));
+		m_BlueShader.reset(Hazel::OpenGLShader::Create(SquareVertexSrc, SquareFragmentSrc));
 	}
 
 	// 输入轮询
@@ -149,17 +155,17 @@ public:
 		Hazel::Renderer::BeginScene(m_Camera);
 
 		glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
+
+
+		m_BlueShader->Bind();
+		std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_BlueShader)->UploadUniformFloat3("u_Color", m_SquareColor);
+			
+
 		int T = 21;
-		glm::vec4 redColor = { 0.8f, 0.2f, 0.3f, 1.0f };
-		glm::vec4 blueColor = { 0.2f, 0.3f, 0.8f, 1.0f };
 		for (int i = 0; i < T; i++) {
 			for (int j = 0; j < T; j++) {
 				glm::vec3 pos = { i * 0.11f + 0.3f, j * 0.11f + 0.3f, 0.0f };
 				glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
-				if (j % 2 == 0 && i % 2 == 0)
-					m_BlueShader->UploadUniformFloat4("u_Color", redColor);
-				else
-					m_BlueShader->UploadUniformFloat4("u_Color", blueColor);
 
 				Hazel::Renderer::Submit(m_BlueShader, m_SquareVAO, transform);
 			}
@@ -171,7 +177,9 @@ public:
 	}
 
 	virtual void OnImGuiRender() override {
-
+		ImGui::Begin("Color Settings");
+		ImGui::ColorEdit3("Square Color", glm::value_ptr(m_SquareColor));
+		ImGui::End();
 	}
 
 	// 事件系统
@@ -192,6 +200,8 @@ private:
 	glm::vec3 m_CameraPosition;
 	float m_CameraRotationSpeed = 180.0f;
 	float m_CameraRotation = 0;
+
+	glm::vec3 m_SquareColor;
 
 };
 
