@@ -4,6 +4,8 @@
 #include "Log.h"
 #include "Input.h"
 
+#include "Renderer/Renderer.h"
+
 #include <GLFW/glfw3.h>
 
 namespace Hazel {
@@ -26,6 +28,8 @@ namespace Hazel {
 		//m_Window->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
 		//m_Window->SetEventCallback(this->OnEvent);
 		m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
+
+		Renderer::Init();
 
 		// 将 ImGuiLayer 放在最后
 		m_ImGuiLayer = new ImGuiLayer();

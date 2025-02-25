@@ -5,4 +5,6 @@
 
 namespace Hazel {
 	RendererAPI* RenderCommand::s_RendererAPI = RendererAPI::Create();
+
+
 }

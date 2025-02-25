@@ -137,6 +137,7 @@ public:
  			uniform mat4 u_Transform;
  
  			out vec2 v_TexCoord;
+			
  
  			void main() {
  				v_TexCoord = a_TexCoord;
@@ -159,9 +160,12 @@ public:
  		)";
  		m_TextureShader.reset(Hazel::OpenGLShader::Create(textureVertexSrc, textureFragmentSrc));
  		m_Texture = Hazel::Texture2D::Create("assets/textures/Checkerboard.png");
- 
+		m_ChernoLogoTexture = Hazel::Texture2D::Create("assets/textures/ChernoLogo.png");
+
  		std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_TextureShader)->Bind();
  		std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_TextureShader)->UploadUniformInt("u_Texture", 0);
+		//std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_TextureShader)->UploadUniformInt("u_ChernoLogoTexture", 1);
+
 	}
 
 	// 输入轮询
@@ -208,12 +212,14 @@ public:
 				Hazel::Renderer::Submit(m_BlueShader, m_SquareVAO, transform);
 			}
 		}
-
 		m_Texture->Bind();
 
 		//Hazel::Renderer::Submit(m_Shader, m_VertexArray);
 		Hazel::Renderer::Submit(m_TextureShader, m_SquareVAO);
 
+
+		m_ChernoLogoTexture->Bind();
+		Hazel::Renderer::Submit(m_TextureShader, m_SquareVAO);
 
 		Hazel::Renderer::EndScene();
 	}
@@ -237,7 +243,7 @@ private:
 	Hazel::Ref<Hazel::VertexArray> m_SquareVAO;
 	Hazel::Ref<Hazel::Shader> m_BlueShader, m_TextureShader;
 
-	Hazel::Ref<Hazel::Texture2D> m_Texture;
+	Hazel::Ref<Hazel::Texture2D> m_Texture, m_ChernoLogoTexture;
 
 	Hazel::OrthographicCamera m_Camera;
 	float m_CameraMoveSpeed = 4.0f;
