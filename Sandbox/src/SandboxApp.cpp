@@ -23,7 +23,7 @@ public:
 			0.5f,	-0.5f,	0.0f,	0.2f, 0.3f, 0.8f, 1.0f,
 			0.0f,	0.5f,	0.0f,	0.8f, 0.8f, 0.2f, 1.0f
 		};
-		std::shared_ptr<Hazel::VertexBuffer> vertexBuffer;
+		Hazel::Ref<Hazel::VertexBuffer> vertexBuffer;
 		vertexBuffer.reset(Hazel::VertexBuffer::Create(vertices, sizeof(vertices)));
 
 		Hazel::BufferLayout layout = {
@@ -34,7 +34,7 @@ public:
 		m_VertexArray->AddVertexBuffer(vertexBuffer);
 
 		unsigned int indices[3] = { 0, 1, 2 };
-		std::shared_ptr<Hazel::IndexBuffer> indexBuffer;
+		Hazel::Ref<Hazel::IndexBuffer> indexBuffer;
 		indexBuffer.reset(Hazel::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
 		m_VertexArray->SetIndexBuffer(indexBuffer);
 
@@ -74,23 +74,24 @@ public:
 
 
 		m_SquareVAO.reset(Hazel::VertexArray::Create());
-		float squareVertices[4 * 3] = {
-			-0.5f,	-0.5f,	0.0f,
-			 0.5f,	-0.5f,	0.0f,
-			 0.5f,	 0.5f,	0.0,
-			-0.5f,	 0.5f,	0.0,
+		float squareVertices[4 * 5] = {
+			-0.5f,	-0.5f,	0.0f, 0.0f, 0.0f,
+			 0.5f,	-0.5f,	0.0f, 1.0f, 0.0f,
+			 0.5f,	 0.5f,	0.0,  1.0f, 1.0f,
+			-0.5f,	 0.5f,	0.0,  0.0f, 1.0f
 		};
-		std::shared_ptr<Hazel::VertexBuffer> SquareBuffer;
+		Hazel::Ref<Hazel::VertexBuffer> SquareBuffer;
 		SquareBuffer.reset(Hazel::VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
 
 		Hazel::BufferLayout squareLayout = {
 			{Hazel::ShaderDataType::Float3, "a_Position"},
+			{Hazel::ShaderDataType::Float2, "a_TexCoord"},
 		};
 		SquareBuffer->SetLayout(squareLayout);
 		m_SquareVAO->AddVertexBuffer(SquareBuffer);
 
 		unsigned int SquareIndices[6] = { 0, 1, 2, 2, 3, 0 };
-		std::shared_ptr<Hazel::IndexBuffer> SquareIndexBuffer;
+		Hazel::Ref<Hazel::IndexBuffer> SquareIndexBuffer;
 		SquareIndexBuffer.reset(Hazel::IndexBuffer::Create(SquareIndices, sizeof(SquareIndices) / sizeof(uint32_t)));
 		m_SquareVAO->SetIndexBuffer(SquareIndexBuffer);
 
@@ -122,6 +123,45 @@ public:
 			}
 		)";
 		m_BlueShader.reset(Hazel::OpenGLShader::Create(SquareVertexSrc, SquareFragmentSrc));
+
+		/// <summary>
+		///  TextureShader
+		/// </summary>
+ 		std::string textureVertexSrc = R"(
+ 			#version 330 core
+ 	
+ 			layout(location = 0) in vec3 a_Position;
+ 			layout(location = 1) in vec2 a_TexCoord;
+ 
+ 			uniform mat4 u_ViewProjection;
+ 			uniform mat4 u_Transform;
+ 
+ 			out vec2 v_TexCoord;
+ 
+ 			void main() {
+ 				v_TexCoord = a_TexCoord;
+ 				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);
+ 			}
+ 		)";
+ 
+ 		std::string textureFragmentSrc = R"(
+ 			#version 330 core
+ 			
+ 			layout(location = 0) out vec4 color;
+ 
+ 			in vec2 v_TexCoord;
+ 
+ 			uniform sampler2D u_Texture;
+ 
+ 			void main() {
+ 				color = texture(u_Texture, v_TexCoord);
+ 			}
+ 		)";
+ 		m_TextureShader.reset(Hazel::OpenGLShader::Create(textureVertexSrc, textureFragmentSrc));
+ 		m_Texture = Hazel::Texture2D::Create("assets/textures/Checkerboard.png");
+ 
+ 		std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_TextureShader)->Bind();
+ 		std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_TextureShader)->UploadUniformInt("u_Texture", 0);
 	}
 
 	// 输入轮询
@@ -156,11 +196,9 @@ public:
 
 		glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
 
-
 		m_BlueShader->Bind();
 		std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_BlueShader)->UploadUniformFloat3("u_Color", m_SquareColor);
 			
-
 		int T = 21;
 		for (int i = 0; i < T; i++) {
 			for (int j = 0; j < T; j++) {
@@ -171,7 +209,11 @@ public:
 			}
 		}
 
-		Hazel::Renderer::Submit(m_Shader, m_VertexArray);
+		m_Texture->Bind();
+
+		//Hazel::Renderer::Submit(m_Shader, m_VertexArray);
+		Hazel::Renderer::Submit(m_TextureShader, m_SquareVAO);
+
 
 		Hazel::Renderer::EndScene();
 	}
@@ -189,11 +231,13 @@ public:
 
 
 private:
-	std::shared_ptr<Hazel::VertexArray> m_VertexArray;
-	std::shared_ptr<Hazel::Shader> m_Shader;
+	Hazel::Ref<Hazel::VertexArray> m_VertexArray;
+	Hazel::Ref<Hazel::Shader> m_Shader;
 
-	std::shared_ptr<Hazel::VertexArray> m_SquareVAO;
-	std::shared_ptr<Hazel::Shader> m_BlueShader;
+	Hazel::Ref<Hazel::VertexArray> m_SquareVAO;
+	Hazel::Ref<Hazel::Shader> m_BlueShader, m_TextureShader;
+
+	Hazel::Ref<Hazel::Texture2D> m_Texture;
 
 	Hazel::OrthographicCamera m_Camera;
 	float m_CameraMoveSpeed = 4.0f;

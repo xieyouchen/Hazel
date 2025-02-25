@@ -16,6 +16,7 @@ includeDir["GLFW"] = "Hazel/vendor/GLFW/include"
 includeDir["Glad"] = "Hazel/vendor/Glad/include"
 includeDir["ImGui"] = "Hazel/vendor/imgui"
 includeDir["glm"] = "Hazel/vendor/glm"
+includeDir["stb_image"] = "Hazel/vendor/stb_img"
 
 -- 下面这个 include 相当于把 glfw 库中的 premake.lua 内容拷贝到此处
 -- 如果没有 premake.lua 会报错，比如说 	include "Hazel/vendor/glm"
@@ -44,6 +45,8 @@ project "Hazel"		--Hazel项目
 	files{
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp",
+		"%{prj.name}/vendor/stb_img/**.h",
+		"%{prj.name}/vendor/stb_img/**.cpp",
 		"%{prj.name}/vendor/glm/glm/**.hpp",
 		"%{prj.name}/vendor/glm/glm/**.inl"
 	}
@@ -54,7 +57,9 @@ project "Hazel"		--Hazel项目
 		"%{includeDir.GLFW}",
 		"%{includeDir.Glad}",
 		"%{includeDir.ImGui}",
-		"%{includeDir.glm}"
+		"%{includeDir.glm}",
+		"%{includeDir.stb_image}"
+
 	}
 
 	-- Hazel 链接 glfw 项目
