@@ -12,4 +12,10 @@ namespace Hazel {
 	{
 		return new OpenGLShader(vertexSrc, fragmentSrc);
 	}
+
+	Hazel::Shader* Shader::Create(const std::string& path)
+	{
+		return new OpenGLShader(path);
+	}
+
 }
