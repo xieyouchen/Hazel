@@ -70,7 +70,7 @@ public:
 				color = v_Color;
 			}
 		)";
-		m_Shader.reset(Hazel::OpenGLShader::Create(vertexSrc, fragmentSrc));
+		m_Shader = Hazel::OpenGLShader::Create("m_Shader", vertexSrc, fragmentSrc);
 
 
 		m_SquareVAO.reset(Hazel::VertexArray::Create());
@@ -96,7 +96,7 @@ public:
 		m_SquareVAO->SetIndexBuffer(SquareIndexBuffer);
 
 
-		m_BlueShader.reset(Hazel::Shader::Create("assets/shaders/Texture.glsl"));
+		m_ShaderLibrary.Load("assets/shaders/Texture.glsl");
 
 		/// <summary>
 		///  TextureShader
@@ -132,7 +132,7 @@ public:
  				color = texture(u_Texture, v_TexCoord);
  			}
  		)";
- 		m_TextureShader.reset(Hazel::OpenGLShader::Create(textureVertexSrc, textureFragmentSrc));
+ 		m_TextureShader = Hazel::OpenGLShader::Create("TextureShader", textureVertexSrc, textureFragmentSrc);
  		m_Texture = Hazel::Texture2D::Create("assets/textures/Checkerboard.png");
 		m_ChernoLogoTexture = Hazel::Texture2D::Create("assets/textures/ChernoLogo.png");
 
@@ -174,8 +174,9 @@ public:
 
 		glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
 
-		m_BlueShader->Bind();
-		std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_BlueShader)->UploadUniformFloat3("u_Color", m_SquareColor);
+		auto BlueShader = m_ShaderLibrary.Get("Texture");
+		BlueShader->Bind();
+		std::dynamic_pointer_cast<Hazel::OpenGLShader>(BlueShader)->UploadUniformFloat3("u_Color", m_SquareColor);
 			
 		int T = 21;
 		for (int i = 0; i < T; i++) {
@@ -183,7 +184,7 @@ public:
 				glm::vec3 pos = { i * 0.11f + 0.3f, j * 0.11f + 0.3f, 0.0f };
 				glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
 
-				Hazel::Renderer::Submit(m_BlueShader, m_SquareVAO, transform);
+				Hazel::Renderer::Submit(BlueShader, m_SquareVAO, transform);
 			}
 		}
 		m_Texture->Bind();
@@ -211,11 +212,12 @@ public:
 
 
 private:
+	Hazel::ShaderLibrary m_ShaderLibrary;
 	Hazel::Ref<Hazel::VertexArray> m_VertexArray;
 	Hazel::Ref<Hazel::Shader> m_Shader;
 
 	Hazel::Ref<Hazel::VertexArray> m_SquareVAO;
-	Hazel::Ref<Hazel::Shader> m_BlueShader, m_TextureShader;
+	Hazel::Ref<Hazel::Shader> m_TextureShader;
 
 	Hazel::Ref<Hazel::Texture2D> m_Texture, m_ChernoLogoTexture;
 
